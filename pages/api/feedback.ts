@@ -1,6 +1,6 @@
 import path from "path";
 
-export default function handler(
+export default async function handler(
   req: any,
   res: any
 ) {
@@ -9,18 +9,16 @@ export default function handler(
     const feedbackText = req.body.text;
 
     const newFeedback = {
-      id: new Date().toISOString,
+      id: new Date(),
       email: email,
       text: feedbackText
     };
 
     // store data in the db or file
-    const fs = require('fs').promises;
+    const fs = require('fs/promises');
     const filePath = path.join(process.cwd(), "data", "feedback.json");
-    const fileData = fs.readFile(filePath);
-
-    var data = [];
-    try { data = JSON.parse(fileData) } catch (e) { }
+    const fileData = await fs.readFile(filePath);
+    const data = JSON.parse(fileData);
 
     data.push(newFeedback);
     fs.writeFile(filePath, JSON.stringify(data));
